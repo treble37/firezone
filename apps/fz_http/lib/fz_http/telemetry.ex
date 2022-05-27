@@ -8,103 +8,95 @@ defmodule FzHttp.Telemetry do
 
   require Logger
 
+  def add_network(network) do
+    capture_event(
+      "add_network",
+      network_uuid_hash: hash(network.id),
+      admin_email_hash: hash(admin_email())
+    )
+  end
+
+  def delete_network(network) do
+    capture_event(
+      "delete_network",
+      network_uuid_hash: hash(network.id),
+      admin_email_hash: hash(admin_email())
+    )
+  end
+
   def add_device(device) do
-    telemetry_module().capture(
+    capture_event(
       "add_device",
-      common_fields() ++
-        [
-          device_uuid_hash: hash(device.uuid),
-          user_email_hash: hash(user_email(device.user_id)),
-          admin_email_hash: hash(admin_email())
-        ]
+      device_uuid_hash: hash(device.uuid),
+      user_email_hash: hash(user_email(device.user_id)),
+      admin_email_hash: hash(admin_email())
     )
   end
 
   def add_user(user) do
-    telemetry_module().capture(
+    capture_event(
       "add_user",
-      common_fields() ++
-        [
-          user_email_hash: hash(user.email),
-          admin_email_hash: hash(admin_email())
-        ]
+      user_email_hash: hash(user.email),
+      admin_email_hash: hash(admin_email())
     )
   end
 
   def add_rule(rule) do
-    telemetry_module().capture(
+    capture_event(
       "add_rule",
-      common_fields() ++
-        [
-          rule_uuid_hash: hash(rule.uuid),
-          admin_email_hash: hash(admin_email())
-        ]
+      rule_uuid_hash: hash(rule.uuid),
+      admin_email_hash: hash(admin_email())
     )
   end
 
   def delete_device(device) do
-    telemetry_module().capture(
+    capture_event(
       "delete_device",
-      common_fields() ++
-        [
-          device_uuid_hash: hash(device.uuid),
-          user_email_hash: hash(user_email(device.user_id)),
-          admin_email_hash: hash(admin_email())
-        ]
+      device_uuid_hash: hash(device.uuid),
+      user_email_hash: hash(user_email(device.user_id)),
+      admin_email_hash: hash(admin_email())
     )
   end
 
   def delete_user(user) do
-    telemetry_module().capture(
+    capture_event(
       "delete_user",
-      common_fields() ++
-        [
-          user_email_hash: hash(user.email),
-          admin_email_hash: hash(admin_email())
-        ]
+      user_email_hash: hash(user.email),
+      admin_email_hash: hash(admin_email())
     )
   end
 
   def delete_rule(rule) do
-    telemetry_module().capture(
+    capture_event(
       "delete_rule",
-      common_fields() ++
-        [
-          rule_uuid_hash: hash(rule.uuid),
-          admin_email_hash: hash(admin_email())
-        ]
+      rule_uuid_hash: hash(rule.uuid),
+      admin_email_hash: hash(admin_email())
     )
   end
 
   def login(user) do
-    telemetry_module().capture(
+    capture_event(
       "login",
-      common_fields() ++
-        [
-          user_email_hash: hash(user.email)
-        ]
+      user_email_hash: hash(user.email)
     )
   end
 
   def disable_user(user, reason) do
-    telemetry_module().capture(
+    capture_event(
       "disable_user",
-      common_fields() ++
-        [user_email_hash: hash(user.email), reason: reason]
+      user_email_hash: hash(user.email),
+      reason: reason
     )
   end
 
-  def fz_http_started do
-    telemetry_module().capture(
-      "fz_http_started",
-      common_fields()
-    )
-  end
+  def fz_http_started, do: capture_event("fz_http_started")
 
-  def ping do
+  def ping, do: capture_event("ping")
+
+  defp capture_event(name, extra_fields \\ []) do
     telemetry_module().capture(
-      "ping",
-      common_fields()
+      name,
+      common_fields() ++ extra_fields
     )
   end
 

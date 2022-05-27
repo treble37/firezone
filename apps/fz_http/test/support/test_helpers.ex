@@ -6,6 +6,7 @@ defmodule FzHttp.TestHelpers do
   alias FzHttp.{
     ConnectivityChecksFixtures,
     DevicesFixtures,
+    NetworksFixtures,
     Repo,
     RulesFixtures,
     Users,
@@ -25,6 +26,10 @@ defmodule FzHttp.TestHelpers do
 
   def create_unprivileged_device(%{unprivileged_user: user}) do
     {:ok, device: DevicesFixtures.device(%{user_id: user.id})}
+  end
+
+  def create_network(_tags) do
+    {:ok, network: NetworksFixtures.network()}
   end
 
   def create_device(tags) do
